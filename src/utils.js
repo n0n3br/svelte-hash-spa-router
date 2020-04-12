@@ -1,3 +1,13 @@
+export const pathRegex = (url) => {
+  return new RegExp(
+    "^" +
+      url
+        .split("?")[0]
+        .replace(/\//g, "\\/")
+        .replace(/(:\w+)/g, ".") +
+      "$"
+  );
+};
 export const makeHash = (route, params) =>
   !route.path
     ? ""

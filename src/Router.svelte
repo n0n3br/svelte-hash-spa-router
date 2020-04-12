@@ -1,13 +1,27 @@
 <script context="module">
-  import { writable } from "svelte/store";
+  import { writable, get } from "svelte/store";
+  import { makeHash, makeQuery, pathRegex } from "./utils";
   const routerStore = writable({
     routes: [],
     route: {},
     query: {},
     params: {}
   });
+
   export const store = {
     subscribe: routerStore.subscribe
+  };
+  export const navigate = (to, params = {}, query = {}) => {
+    if (!to)
+      throw new Error(
+        "svelte-hash-spa-router navigate method expects 'to' to be defined"
+      );
+    const routes = get(store).routes;
+    const route =
+      routes.find(r => r.name === to || to.match(pathRegex(r.path))) || {};
+    if (!route)
+      throw new Error(`svelte-hash-spa-router route '${to}' is not valid`);
+    location.hash = "#" + makeHash(route, params) + makeQuery(query);
   };
 </script>
 
@@ -36,26 +50,23 @@
 
   const update = () => {
     path = window.location.hash.split("?")[0].replace("#", "");
-    route = routes.find(r => {
-      return pathRegex(r.path).test(path);
-    });
-    if (!route) {
+    const newRoute = routes.find(r => path.match(pathRegex(r.path))) || {};
+    if (!newRoute) {
       history.replaceState({}, {}, "#/404");
     }
-    params = extractParams();
-    query = extractQuery();
-    routerStore.update(state => ({ ...state, route, params, query }));
-  };
-
-  const pathRegex = url => {
-    return new RegExp(
-      "^" +
-        url
-          .split("?")[0]
-          .replace(/\//g, "\\/")
-          .replace(/(:\w+)/g, ".") +
-        "$"
-    );
+    const beforeRouteEnter = newRoute.beforeRouteEnter || (() => true);
+    const fakeNavigate = to => to;
+    const routeGuardResponse = beforeRouteEnter(fakeNavigate);
+    if (typeof routeGuardResponse === "string") {
+      beforeRouteEnter(navigate);
+    } else if (!routeGuardResponse) {
+      return;
+    } else {
+      route = newRoute;
+      params = extractParams();
+      query = extractQuery();
+      routerStore.update(state => ({ ...state, route, params, query }));
+    }
   };
 
   const extractParams = () => {

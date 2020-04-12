@@ -3,7 +3,8 @@
   const routes = [
     { name: "main", path: "/" },
     { name: "about", path: "/about", query: { name: "Rogerio " } },
-    { name: "posts", path: "/posts", match: /\/posts\/.+/g }
+    { name: "posts", path: "/posts", match: /\/posts\/.+/g },
+    { name: "redirect", path: "/redirect" }
   ];
 </script>
 
@@ -25,7 +26,7 @@
       {#each routes as route}
         <Link
           to={route.path}
-          config={{ class: 'navbar-item', activeClass: 'is-active' }}
+          config={{ class: 'navbar-item is-tab', activeClass: 'is-active' }}
           match={route.match}
           query={route.query}>
           {route.name}

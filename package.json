@@ -1,5 +1,5 @@
 {
-  "name": "svelte-hash-spa-router",
+  "name": "@n0n3br/svelte-hash-spa-router",
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {},

@@ -1,6 +1,6 @@
 <script>
   import Nav from "./Nav.svelte";
-  import Router from "./Router.svelte";
+  import AppRouter from "./AppRouter.svelte";
 </script>
 
 <main>
@@ -8,7 +8,7 @@
   <div class="hero is-fullheight-with-navbar">
     <div class="hero-body">
       <div class="container has-text-centered">
-        <Router />
+        <AppRouter />
       </div>
 
     </div>

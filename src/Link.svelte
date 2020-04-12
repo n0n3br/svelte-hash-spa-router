@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { store } from "./Router.svelte";
-  import { makeHash, makeQuery } from "./utils";
+  import { makeHash, makeQuery, pathRegex } from "./utils";
   export let to = "",
     params = {},
     query = {},
@@ -27,7 +27,8 @@
     currentRoute = state.route;
   });
 
-  $: linkRoute = routes.find(r => r.name === to || r.path === to) || {};
+  $: linkRoute =
+    routes.find(r => r.name === to || to.match(pathRegex(r.path))) || {};
   $: active =
     linkRoute.path === currentRoute.path ||
     linkRoute.name === currentRoute.name ||
