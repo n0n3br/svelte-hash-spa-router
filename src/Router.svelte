@@ -1,6 +1,20 @@
+<script context="module">
+  import { writable } from "svelte/store";
+  const routerStore = writable({
+    routes: [],
+    route: {},
+    query: {},
+    params: {}
+  });
+  export const store = {
+    subscribe: routerStore.subscribe
+  };
+</script>
+
 <script>
-  import { onMount, setContext } from "svelte";
+  import { onMount } from "svelte";
   import Template404 from "./404.svelte";
+  import TemplateError from "./Error.svelte";
   export let routes = [];
 
   let path, route, params, query;
@@ -10,11 +24,14 @@
       window.history.pushState("", "", `${window.location.origin}/#/`);
     if (!routes.find(r => r.name === "404"))
       routes.push({ name: "404", path: "/404", component: Template404 });
+    routerStore.update(state => ({
+      ...state,
+      routes: routes.map(r => ({ name: r.name, path: r.path }))
+    }));
     update();
     window.onhashchange = () => {
       update();
     };
-    setContext("shsr-routes", routes);
   });
 
   const update = () => {
@@ -23,18 +40,18 @@
       return pathRegex(r.path).test(path);
     });
     if (!route) {
-      // history.replaceState({}, {}, "#/404");
+      history.replaceState({}, {}, "#/404");
     }
     params = extractParams();
     query = extractQuery();
-    // setContext("shsr-route", route);
+    routerStore.update(state => ({ ...state, route, params, query }));
   };
 
   const pathRegex = url => {
     return new RegExp(
       "^" +
         url
-          .split("&")[0]
+          .split("?")[0]
           .replace(/\//g, "\\/")
           .replace(/(:\w+)/g, ".") +
         "$"
@@ -62,6 +79,11 @@
 </script>
 
 {#if route}
-
-  <svelte:component this={route.component} {route} {params} {query} />
+  <svelte:component
+    this={route.component}
+    route={{ path: route.path, name: route.name }}
+    {params}
+    {query} />
+{:else}
+  <TemplateError />
 {/if}

@@ -1,9 +1,10 @@
 <script>
   export let route, params, query;
   import RouterParams from "./RouterParams.svelte";
-  const posts = [...Array(10).keys()].map(key => ({
-    id: key,
-    description: "post number " + String(key)
+  import { Link } from "svelte-hash-spa-router";
+  const posts = [...Array(5).keys()].map(key => ({
+    id: key + 1,
+    description: "post number " + String(key + 1)
   }));
 </script>
 
@@ -14,7 +15,7 @@
       <div class="panel-heading">Posts List</div>
       {#each posts as post}
         <div class="panel-block has-text-centered">
-          <a href={`#/post/${post.id}`}>{post.description}</a>
+          <Link to="post" params={{ id: post.id }}>Post number {post.id}</Link>
         </div>
       {/each}
     </div>

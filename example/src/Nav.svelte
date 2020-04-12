@@ -1,9 +1,9 @@
 <script>
-  import { getContext } from "svelte";
+  import { Link } from "svelte-hash-spa-router";
   const routes = [
     { name: "main", path: "/" },
-    { name: "about", path: "/about" },
-    { name: "posts", path: "/posts" }
+    { name: "about", path: "/about", query: { name: "Rogerio " } },
+    { name: "posts", path: "/posts", match: /\/posts\/.+/g }
   ];
 </script>
 
@@ -23,7 +23,13 @@
   <div class="navbar-menu">
     <div class="navbar-end">
       {#each routes as route}
-        <a class="navbar-item" href={'#' + route.path}>{route.name}</a>
+        <Link
+          to={route.path}
+          config={{ class: 'navbar-item', activeClass: 'is-active' }}
+          match={route.match}
+          query={route.query}>
+          {route.name}
+        </Link>
       {/each}
     </div>
   </div>
