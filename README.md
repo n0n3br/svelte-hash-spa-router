@@ -66,9 +66,9 @@ Provides the router container that will choose wich component to render based on
 
 ###### Properties
 
-| Property | Required | Default Value | Description                                                                                                                                             |
-| :------: | :------: | :-----------: | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `routes` |    ✔     |      [ ]      | An array that describes the routes. Each route is composed of a name, a path (`/main` for example), a component and an optional beforeRouteEnter guard. |
+| Property | Required | Default Value | Description                                                                                                                                            |
+| :------: | :------: | :-----------: | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `routes` |    ✔     |      [ ]      | An array that describes the routes. Each route is composed of a name, a path (`/main` for example), a component and an optional beforeRouteEnter guard |
 
 The router will export route (the active route path and name), params (url params with name and value), and query (query params with name and value) to the rendered route. All you need to do is put a `export let route, params, query` in the script portion of your component.
 
